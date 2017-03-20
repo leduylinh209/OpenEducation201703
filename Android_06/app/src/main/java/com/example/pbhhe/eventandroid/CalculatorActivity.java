@@ -31,6 +31,8 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
     private float mNum1;
     private float mNum2;
     private float mRes;
+    private TextView mTextOperation;
+    private boolean mIsSetOperation = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +56,7 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
         mButtonAdd = (Button) findViewById(R.id.button_add);
         mButtonEqual = (Button) findViewById(R.id.button_equal);
         mButtonDot = (Button) findViewById(R.id.button_dot);
+        mTextOperation = (TextView) findViewById(R.id.text_operation);
         mButton0.setOnClickListener(this);
         mButton1.setOnClickListener(this);
         mButton2.setOnClickListener(this);
@@ -71,6 +74,7 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
         mButtonAdd.setOnClickListener(this);
         mButtonEqual.setOnClickListener(this);
         mButtonDot.setOnClickListener(this);
+        mTextOperation.setOnClickListener(this);
     }
 
 
@@ -133,70 +137,96 @@ public class CalculatorActivity extends AppCompatActivity implements View.OnClic
                 if (mTextInput.getText().length() > 0) {
                     mTextDisplay.setText(mTextInput.getText());
                     mTextInput.setText("");
+                    mTextOperation.setText("/");
                     mIsFloat = false;
+                    mIsSetOperation = true;
+                }
+                else{
+                    mTextDisplay.setText(mTextDisplay.getText());
                 }
                 break;
             case R.id.button_mul:
                 mOperation = '*';
+                mTextOperation.setText("x");
+                mIsFloat = false;
+                mIsSetOperation = true;
                 if (mTextInput.getText().length() > 0) {
                     mTextDisplay.setText(mTextInput.getText());
                     mTextInput.setText("");
-                    mIsFloat = false;
+                }
+                else{
+                    mTextDisplay.setText(mTextDisplay.getText());
                 }
                 break;
             case R.id.button_sub:
                 mOperation = '-';
+                mTextOperation.setText("-");
+                mIsFloat = false;
+                mIsSetOperation = true;
                 if (mTextInput.getText().length() > 0) {
                     mTextDisplay.setText(mTextInput.getText());
                     mTextInput.setText("");
-                    mIsFloat = false;
                 }
                 break;
             case R.id.button_add:
                 mOperation = '+';
+                mTextOperation.setText("+");
+                mIsFloat = false;
+                mIsSetOperation = true;
                 if (mTextInput.getText().length() > 0) {
                     mTextDisplay.setText(mTextInput.getText());
                     mTextInput.setText("");
-                    mIsFloat = false;
+                }
+                else{
+                    mTextDisplay.setText(mTextDisplay.getText());
                 }
                 break;
             case R.id.button_equal:
                 if (mTextInput.getText().length() > 0){
                     mIsFloat = false;
-                    switch (mOperation){
-                        case '/':
-                            mNum1 = toFloat(mTextDisplay.getText());
-                            mNum2 = toFloat(mTextInput.getText());
-                            mRes = mNum1 / mNum2;
-                            mTextDisplay.setText(Float.toString(mRes));
-                            mTextInput.setText("");
-                            break;
-                        case '*':
-                            mNum1 = toFloat(mTextDisplay.getText());
-                            mNum2 = toFloat(mTextInput.getText());
-                            mRes = mNum1 * mNum2;
-                            mTextDisplay.setText(Float.toString(mRes));
-                            mTextInput.setText("");
-                            break;
-                        case '-':
-                            mNum1 = toFloat(mTextDisplay.getText());
-                            mNum2 = toFloat(mTextInput.getText());
-                            mRes = mNum1 - mNum2;
-                            mTextDisplay.setText(Float.toString(mRes));
-                            mTextInput.setText("");
-                            break;
-                        case '+':
-                            mNum1 = toFloat(mTextDisplay.getText());
-                            mNum2 = toFloat(mTextInput.getText());
-                            mRes = mNum1 + mNum2;
-                            mTextDisplay.setText(Float.toString(mRes));
-                            mTextInput.setText("");
-                            break;
+                    mTextOperation.setText("=");
+                    if (mIsSetOperation) {
+                        switch (mOperation) {
+                            case '/':
+                                mNum1 = toFloat(mTextDisplay.getText());
+                                mNum2 = toFloat(mTextInput.getText());
+                                mRes = mNum1 / mNum2;
+                                mTextDisplay.setText(Float.toString(mRes));
+                                mTextInput.setText("");
+                                break;
+                            case '*':
+                                mNum1 = toFloat(mTextDisplay.getText());
+                                mNum2 = toFloat(mTextInput.getText());
+                                mRes = mNum1 * mNum2;
+                                mTextDisplay.setText(Float.toString(mRes));
+                                mTextInput.setText("");
+                                break;
+                            case '-':
+                                mNum1 = toFloat(mTextDisplay.getText());
+                                mNum2 = toFloat(mTextInput.getText());
+                                mRes = mNum1 - mNum2;
+                                mTextDisplay.setText(Float.toString(mRes));
+                                mTextInput.setText("");
+                                break;
+                            case '+':
+                                mNum1 = toFloat(mTextDisplay.getText());
+                                mNum2 = toFloat(mTextInput.getText());
+                                mRes = mNum1 + mNum2;
+                                mTextDisplay.setText(Float.toString(mRes));
+                                mTextInput.setText("");
+                                break;
+                        }
+                        mIsSetOperation = false;
+                    }
+                    else{
+                        mTextDisplay.setText(mTextInput.getText());
+                        mTextInput.setText("");
                     }
                 }
                 break;
         }
     }
+    //Hàm đổi CharSequence thành Float để tính
     public float toFloat(CharSequence s) {
         float res = 0;
         int digit;
